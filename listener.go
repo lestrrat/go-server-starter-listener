@@ -68,6 +68,6 @@ func ListenersIn (list []ListenTarget) ([]net.Listener, error) {
 }
 
 func ListenOn (t ListenTarget) (net.Listener, error) {
-  f := os.NewFile(t.Fd, "foo")
+  f := os.NewFile(t.Fd, t.Name)
   return net.FileListener(f)
 }
