@@ -17,6 +17,10 @@ type ListenTarget struct {
   Fd    uintptr
 }
 
+/*
+ * Parses SERVER_STARTER_PORT environment variable, and returns a list of
+ * of ListenTarget structs that can be passed to NewListenerOn()
+ */
 func Ports() ([]ListenTarget, error) {
   ssport := os.Getenv("SERVER_STARTER_PORT")
   if ssport == "" {
@@ -26,6 +30,10 @@ func Ports() ([]ListenTarget, error) {
   return ParsePorts(ssport)
 }
 
+/*
+ * Parses the given string and returns a list of
+ * of ListenTarget structs that can be passed to NewListenerOn()
+ */
 func ParsePorts(ssport string) ([]ListenTarget, error) {
   ret := []ListenTarget{}
   for _, pairstring := range strings.Split(ssport, ";") {
@@ -39,26 +47,39 @@ func ParsePorts(ssport string) ([]ListenTarget, error) {
   return ret, nil
 }
 
+/*
+ * Creates a new listener from SERVER_STARTER_PORT environment variable
+ *
+ * Note that this binds to only ONE file descriptor (the first one found)
+ */
 func NewListener() (net.Listener, error) {
   portmap, err := Ports()
   if err != nil {
     return nil, err
   }
-  return ListenOn(portmap[0])
+  return NewListenerOn(portmap[0])
 }
 
+/* 
+ * Creates new listeners from SERVER_STARTER_PORT environment variable.
+ *
+ * This binds to ALL file descriptors in SERVER_STARTER_PORT
+ */
 func AllListeners() ([]net.Listener, error) {
   portmap, err := Ports()
   if err != nil {
     return nil, err
   }
-  return ListenersIn(portmap)
+  return NewListenersOn(portmap)
 }
 
-func ListenersIn (list []ListenTarget) ([]net.Listener, error) {
+/*
+ * Given a list of ListenTargets, creates listeners for each one
+ */
+func NewListenersOn (list []ListenTarget) ([]net.Listener, error) {
   ret := []net.Listener {}
   for _, t := range list {
-    l, err := ListenOn(t)
+    l, err := NewListenerOn(t)
     if err != nil {
       return nil, err
     }
@@ -67,7 +88,10 @@ func ListenersIn (list []ListenTarget) ([]net.Listener, error) {
   return ret, nil
 }
 
-func ListenOn (t ListenTarget) (net.Listener, error) {
+/*
+ * Given a ListenTarget, creates a listener
+ */
+func NewListenerOn (t ListenTarget) (net.Listener, error) {
   f := os.NewFile(t.Fd, t.Name)
   return net.FileListener(f)
 }
