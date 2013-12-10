@@ -4,7 +4,6 @@ package ss
 // Alias it if it bugs you
 
 import (
-  "C"
   "errors"
   "fmt"
   "net"
