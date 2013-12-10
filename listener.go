@@ -47,6 +47,14 @@ func NewListener() (net.Listener, error) {
   return ListenOn(portmap[0])
 }
 
+func AllListeners() ([]net.Listener, error) {
+  portmap, err := Ports()
+  if err != nil {
+    return nil, err
+  }
+  return ListenersIn(portmap)
+}
+
 func ListenersIn (list []ListenTarget) ([]net.Listener, error) {
   ret := []net.Listener {}
   for _, t := range list {
