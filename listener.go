@@ -56,14 +56,15 @@ to the "default" bind address
 */
 func NewListenerOrDefault(proto, defaultBindAddress string) (net.Listener, error) {
   l, err := NewListener()
-  if err != nil {
-    dl, err := net.Listen(proto, defaultBindAddress)
-    if err != nil {
-      return nil, err
-    }
+  if err == nil {
+    return l, nil
+  }
+
+  dl, err := net.Listen(proto, defaultBindAddress)
+  if err == nil {
     return dl, nil
   }
-  return l, nil
+  return nil, err
 }
 
 /*
