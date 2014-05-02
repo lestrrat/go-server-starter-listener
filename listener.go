@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// ListenTarget desribes an address and an associated file descriptor
+// ListenTarget describes an address and an associated file descriptor
 type ListenTarget struct {
 	Name string // host:port | port. Currently unix sockets are not supported
 	Fd   uintptr
@@ -17,7 +17,7 @@ type ListenTarget struct {
 /*
 
 Ports parses SERVER_STARTER_PORT environment variable, and returns a list of
-of ListenTarget structs that can be passed to NewListenerOn()
+ListenTarget structs that can be passed to NewListenerOn()
 
 */
 func Ports() ([]ListenTarget, error) {
@@ -32,7 +32,7 @@ func Ports() ([]ListenTarget, error) {
 /*
 
 ParsePorts parses the given string and returns a list of
-of ListenTarget structs that can be passed to NewListenerOn()
+ListenTarget structs that can be passed to NewListenerOn()
 
 */
 func ParsePorts(ssport string) ([]ListenTarget, error) {
@@ -118,7 +118,7 @@ func NewListenersOn(list []ListenTarget) ([]net.Listener, error) {
 
 /*
 
-NewListenerOn creates a listefer for given ListenTarget
+NewListenerOn creates a listener for given ListenTarget
 
 */
 func NewListenerOn(t ListenTarget) (net.Listener, error) {
